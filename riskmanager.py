@@ -130,6 +130,8 @@ oanda.setCurrentAccount('101-001-24797201-001')
 # what price level do you want the trade to close at
 partialcloseprice = 148.727
 
+test = 'hello'
+
 # how many units do you want to partially close 
 partialcloseunits = 63282
 
