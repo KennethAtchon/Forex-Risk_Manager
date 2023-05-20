@@ -1,0 +1,2 @@
+Forex Risk Manager GUI file 
+building the GUI here
