@@ -142,7 +142,7 @@ def runProgram(position, instrument, move_price, timeframe,breakevenprice, usebr
                     break
 
         # wait 1 minute to run command again 
-        time.sleep(60)
+        time.sleep(30)
 
 
 
@@ -151,13 +151,13 @@ oanda = Oanda(os.getenv("ACCESS_TOKEN2"))
 oanda.setCurrentAccount('001-001-9634241-001')
 
 # not need if automatic breakeven
-move_price = 0.6627
+move_price = 1.08220
 
 # long or short position
 position = "short"
 
 # what pair are you trading 
-instrument = "AUD_USD"
+instrument = "EUR_USD"
 
 # timeframe format: H5 (4 hours) S5(5 seconds) M15( 15 minutes)
 # Note: this just changes when your getting out, ex: on the 1m could pass ur
