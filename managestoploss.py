@@ -2,9 +2,6 @@ import requests
 import json
 import os
 import time
-from dotenv import load_dotenv
-
-load_dotenv()
 
 class Oanda:
 
@@ -146,9 +143,9 @@ def runProgram(position, instrument, move_price, timeframe,breakevenprice, usebr
 
 
 
-oanda = Oanda(os.getenv("ACCESS_TOKEN2"))
+oanda = Oanda(os.getenv("ACCESS_TOKEN"))
 
-oanda.setCurrentAccount('001-001-9634241-001')
+oanda.setCurrentAccount('001-001-9634241-002')
 
 # not need if automatic breakeven
 move_price = 1.08220

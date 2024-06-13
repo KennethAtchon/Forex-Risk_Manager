@@ -8,18 +8,25 @@ load_dotenv()
 
 class Oanda:
 
-    def __init__(self,access_token):
+    def __init__(self, access_token, is_demo=True):
         self.access_token = access_token
+        self.is_demo = is_demo
 
-        self.default_headers = {'Content-Type': 'application/json',
-           'Authorization': f'Bearer {self.access_token}'}
+        self.default_headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {self.access_token}'
+        }
 
         self.default_params = {'instruments': 'EUR_USD,USD_JPY'}
 
-        # fxpractice -> fxtrade if live
-        self.account_endpoint = 'https://api-fxtrade.oanda.com/v3/accounts'
+        # Determine endpoints based on the is_demo flag
+        if self.is_demo:
+            self.base_url = 'https://api-fxpractice.oanda.com/v3'
+        else:
+            self.base_url = 'https://api-fxtrade.oanda.com/v3'
 
-        self.instruments_endpoint = 'https://api-fxtrade.oanda.com/v3/instruments'
+        self.account_endpoint = f'{self.base_url}/accounts'
+        self.instruments_endpoint = f'{self.base_url}/instruments'
 
         self.account_id = ''
 
@@ -61,11 +68,14 @@ class Oanda:
         return response.json()
 
 
-    def getAllOrders(self, curreny_pair):
+    def getAllOrders(self, currency_pair=None, allpairs=True):
         endpoint = self.account_endpoint + self.account_id + '/orders'
 
-        params = { "instrument": curreny_pair}
-        response = requests.get(endpoint, headers=self.default_headers, params= params)
+        params = {}
+        if not allpairs and currency_pair is not None:
+            params['instrument'] = currency_pair
+
+        response = requests.get(endpoint, headers=self.default_headers, params=params)
 
         if response.status_code != 200:
             raise Exception("Could not fetch all orders.")
@@ -75,9 +85,11 @@ class Oanda:
     
     def replaceOrder(self, tradeid, price,type="STOP_LOSS",timeInForce="GTC", orderspecify="StopLossOrderRequest"):
 
+        #orderspecify = order id
+
         data = {
         "order": {
-            "timeinForce": timeInForce,
+            #"timeinForce": timeInForce,
             "price": price,
             "type": type,
             "tradeID": tradeid
