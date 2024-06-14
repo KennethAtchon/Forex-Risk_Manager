@@ -114,3 +114,25 @@ class Oanda:
 
         return response.json()
     
+    def partialClosePosition(self, instrument, units):
+
+        data = {}
+        if units < 0:
+            units = abs(units)
+            data = {
+                "shortUnits": str(units)
+            }
+        else:
+            data = {
+                "longUnits": str(units)
+            }
+
+
+        endpoint = self.account_endpoint + self.account_id + '/positions' + "/" + instrument + "/close"
+        response = requests.put(endpoint, headers=self.default_headers, data=json.dumps(data))
+
+        if response.status_code != 200:
+            raise Exception("Could not close position partially.")
+
+        return response.json()
+    

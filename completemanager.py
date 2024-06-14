@@ -44,10 +44,14 @@ def execute_manager():
             first_trade_id = position['long']['tradeIDs'][0]
 
             average_price = float(position['long']['averagePrice'])
+
+            units = position['long']['units']
         else:
             first_trade_id = position['short']['tradeIDs'][0]
 
             average_price = float(position['short']['averagePrice'])
+
+            units = position['short']['units']
 
         # get pair
         instrument = position['instrument']
@@ -75,7 +79,12 @@ def execute_manager():
             time.sleep(60)
 
         # set eachs partials 
-        set_partials()
+        #what is needed to set partials?
+        # difference
+        # percentage
+        percentage = 0.25
+        set_partials(difference, percentage, average_price, timeframe, instrument, is_long, units )
+
         
 
 
@@ -116,8 +125,28 @@ def move_breakeven( trade_id, order, difference, is_long, percentage, average_pr
     print(f"Breakeven move response for trade ID {trade_id}: {json.dumps(response, indent=4)}")
 
 # function for partials (what percentage )
-def set_partials():
-    pass
+def set_partials(difference, percentage, average_price, timeframe, instrument, is_long, units):
+    print("Average Price:", average_price)
+    target_price = average_price + (difference * percentage)
+
+    candle = oanda.getCandles(timeframe, 1, instrument)
+    recent_candle_price = candle['candles'][0]['mid']['o']
+    print("Candle price:", recent_candle_price)
+    current_price = float(recent_candle_price)
+    print("Target price:", target_price)
+    
+    if (is_long and target_price > current_price) or (not is_long and target_price < current_price):
+        print("Invalid target price for the position. Exiting the function.")
+        return
+    
+    if is_long:
+        print(f"The current price is {current_price} which is greater than the target price {target_price} as this trade is long")
+    else:
+        print(f"The current price is {current_price} which is lesser than the target price {target_price} as this trade is short")
+
+    oanda.partialClosePosition(instrument, int(units) * percentage )
+
+
 
 
 execute_manager()
