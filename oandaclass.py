@@ -89,7 +89,7 @@ class Oanda:
 
         data = {
         "order": {
-            #"timeinForce": timeInForce,
+            "timeinForce": timeInForce,
             "price": price,
             "type": type,
             "tradeID": tradeid
@@ -100,7 +100,8 @@ class Oanda:
         response = requests.put(endpoint, headers=self.default_headers, data=json.dumps(data))
 
         if response.status_code != 201:
-            raise Exception("Could replace order.")
+            raise Exception(f"Couldn't replace order. Here's the response: {json.dumps(response.json())}")
+
 
         return response.json()
     
